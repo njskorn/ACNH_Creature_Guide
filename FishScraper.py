@@ -1,5 +1,5 @@
 import pandas as pd
-import plot_utils as putils
+import plot_utils
 import logging
 logging.basicConfig(format='%(asctime)s - %(message)s',level=logging.DEBUG)
 
@@ -23,7 +23,7 @@ class FishScraper:
 
     def plot_by_location(self, df):
         df = df[df['Location'] == self.params['Location']]
-        #print(df.head(13))
+        plot_utils.bar_price(df)
         return 0
 
     def df_info(self, df):
