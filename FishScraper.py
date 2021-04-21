@@ -1,5 +1,7 @@
 import pandas as pd
 import plot_utils as putils
+import logging
+logging.basicConfig(format='%(asctime)s - %(message)s',level=logging.DEBUG)
 
 class FishScraper:
 
@@ -10,6 +12,7 @@ class FishScraper:
         self.params = script_params
 
     def _extract(self):
+        logging.info('Data Scrape')
         df_list = pd.read_html(self.target_url)
         return df_list
 
@@ -20,10 +23,11 @@ class FishScraper:
 
     def plot_by_location(self, df):
         df = df[df['Location'] == self.params['Location']]
-        print(df.head(13))
+        #print(df.head(13))
         return 0
 
     def df_info(self, df):
+        print("== Fish Count ==\n")
         print("River: {}".format(df['Location'][df['Location'] == 'River'].count()))
         print("Pond: {}".format(df['Location'][df['Location'] == 'Pond'].count()))
         print("Sea: {}".format(df['Location'][df['Location'] == 'Sea'].count()))
@@ -34,10 +38,11 @@ class FishScraper:
             df = df_list[2]
         else:
             df = df_list[4]
-        print(df.head())
+        logging.debug('Raw Dataframe Head \n {}'.format(df.head().to_string()))
         df = self.encode_checks_dashes(df)
+        logging.debug('Encoded Dataframe Head \n {}'.format(df.head().to_string()))
         self.df_info(df)
-        print(df.head())
+        logging.info('Plotting by location')
         self.plot_by_location(df)
         return df
 
