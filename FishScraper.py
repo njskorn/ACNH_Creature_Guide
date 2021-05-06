@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import plot_utils
 import logging
@@ -18,12 +19,24 @@ class FishScraper:
 
     def encode_checks_dashes(self, df):
         for month in self.months:
-            df[month] = df[month].astype(str).str.replace(u"\u2713", "True").replace({"-":"False"})
+            df[month] = df[month].astype(str).str.replace(u"\u2713", 'True').replace({"-":'False'})
         return df
 
     def plot_by_location(self, df):
         df = df[df['Location'] == self.params['Location']]
-        plot_utils.bar_price(df)
+        df.reset_index(inplace=True)
+        rad_incs = pd.Series(range(1,df['Name'].count()+1))
+        df['increments']=rad_incs
+        logging.debug('Encoded Dataframe Head \n\n {}'.format(df.head(20).to_string()))
+        for my_col in self.months:
+            df[my_col] = np.where((df[my_col] == 'True'),df['increments'],np.nan)
+        logging.debug('Encoded Dataframe Head \n\n {}'.format(df.head(20).to_string()))
+
+        plot_utils.radial_year(df, self.months)
+        for name in df['Name']:
+            print(df[df['Name'] == name][self.months].values.flatten().tolist())
+        # count True/Falses and plot abundance by month
+        # then go for it with the donut plot!!
         return 0
 
     def df_info(self, df):
@@ -42,6 +55,7 @@ class FishScraper:
         df = self.encode_checks_dashes(df)
         logging.debug('Encoded Dataframe Head \n {}'.format(df.head().to_string()))
         self.df_info(df)
+        df.drop(['Image','Time'], axis=1, inplace=True)
         logging.info('Plotting by location')
         self.plot_by_location(df)
         return df
