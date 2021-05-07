@@ -33,8 +33,20 @@ class FishScraper:
         logging.debug('Encoded Dataframe Head \n\n {}'.format(df.head(20).to_string()))
 
         plot_utils.radial_year(df, self.months)
-        for name in df['Name']:
-            print(df[df['Name'] == name][self.months].values.flatten().tolist())
+        #prices = df.loc[:,'Price'].values
+        #times = df.loc[:,'Time'].values
+        #customdata = np.dstack((prices, times))
+        #print(customdata[0][0][0])
+        #print(customdata[0][0][1])
+        #print(df.index[df['Name'] == "Catfish"][0])
+        #print(np.dstack((prices, times))[0][df.index[df['Name'] == "Catfish"][0]][0])
+        #print(np.dstack((prices, times))[0][df.index[df['Name'] == "Catfish"][0]][1])
+
+        #for name in df['Name']:
+        #    print(df[df['Name'] == name][self.months].values.flatten().tolist())
+
+        #z1, z2, z3 = np.random.random((3,7,7))
+        #print(z1)
         # count True/Falses and plot abundance by month
         # then go for it with the donut plot!!
         return 0
@@ -55,7 +67,7 @@ class FishScraper:
         df = self.encode_checks_dashes(df)
         logging.debug('Encoded Dataframe Head \n {}'.format(df.head().to_string()))
         self.df_info(df)
-        df.drop(['Image','Time'], axis=1, inplace=True)
+        df.drop(['Image'], axis=1, inplace=True)
         logging.info('Plotting by location')
         self.plot_by_location(df)
         return df
