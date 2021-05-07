@@ -33,6 +33,10 @@ class FishScraper:
         logging.debug('Encoded Dataframe Head \n\n {}'.format(df.head(20).to_string()))
 
         plot_utils.radial_year(df, self.months)
+        m=df[df['Name'] == "Koi"][self.months].values.flatten().tolist().append(df[df['Name'] == 'Koi'].loc[:,'Jan'].values[0])
+        #m.append(df[df['Name'] == 'Koi'].loc[:,'Jan'].values[0])
+        print(m)
+        print(df[df['Name'] == 'Koi'].loc[:,'Jan'].values[0])
         #prices = df.loc[:,'Price'].values
         #times = df.loc[:,'Time'].values
         #customdata = np.dstack((prices, times))
