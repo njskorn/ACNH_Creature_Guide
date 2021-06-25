@@ -4,7 +4,39 @@ import plotly.offline as pyo
 import plotly.graph_objs as go
 
 def donut_by_species(df):
-    pass
+
+def donut_example(df):
+    data = [
+        # Portfolio (inner donut)
+        go.Pie(values=[30,40],
+        labels=['Bass',' '],
+        #textinfo='label',
+        domain={'x':[0,1], 'y':[0, 1]}, # change these for outer dimensions
+        hole=0.85,
+        direction='clockwise',
+        sort=False,
+        marker={'colors':['#CB4335','#FFFFFF']},
+        showlegend=True),
+
+
+        # Individual components (outer donut)
+        go.Pie(values=[1,1,1,1],
+        labels=['january','Light Red','Medium Blue','Light Blue'],
+        textinfo='label',
+        domain={'x':[0.1,0.9], 'y':[0,1]},
+        hole=0.9,
+        direction='clockwise',
+        sort=False,
+        marker={'colors':['#EC7063','#F1948A','#5DADE2','#FFFFFF']},
+        showlegend=False)]
+
+    fig = go.Figure(data=data, layout={'title':'Nested Pie Chart'})
+    pyo.plot(fig, filename='donut_test.html')
+
+
+
+
+
 
 def bar_price(df):
     data = [go.Bar(

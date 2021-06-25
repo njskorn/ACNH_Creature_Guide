@@ -22,6 +22,11 @@ class FishScraper:
             df[month] = df[month].astype(str).str.replace(u"\u2713", 'True').replace({"-":'False'})
         return df
 
+    def donut_prep(self, df):
+        logging.info('Plotting Donut')
+        plot_utils.donut_by_species(df)
+        return 0
+
     def plot_by_location(self, df):
         df = df[df['Location'] == self.params['Location']]
         df.reset_index(inplace=True)
@@ -32,11 +37,13 @@ class FishScraper:
             df[my_col] = np.where((df[my_col] == 'True'),df['increments'],np.nan)
         logging.debug('Encoded Dataframe Head \n\n {}'.format(df.head(20).to_string()))
 
-        plot_utils.radial_year(df, self.months)
+        plot_utils.bar_price(df)
+
+        #plot_utils.radial_year(df, self.months)
         m=df[df['Name'] == "Koi"][self.months].values.flatten().tolist().append(df[df['Name'] == 'Koi'].loc[:,'Jan'].values[0])
         #m.append(df[df['Name'] == 'Koi'].loc[:,'Jan'].values[0])
         print(m)
-        print(df[df['Name'] == 'Koi'].loc[:,'Jan'].values[0])
+        #print(df[df['Name'] == 'Koi'].loc[:,'Jan'].values[0])
         #prices = df.loc[:,'Price'].values
         #times = df.loc[:,'Time'].values
         #customdata = np.dstack((prices, times))
@@ -73,17 +80,11 @@ class FishScraper:
         self.df_info(df)
         df.drop(['Image'], axis=1, inplace=True)
         logging.info('Plotting by location')
-        self.plot_by_location(df)
+        #self.plot_by_location(df)
+        self.donut_prep(df)
         return df
 
     def generate(self):
         df_list = self._extract()
         df = self._transform(df_list)
         return df
-
-params = {
-    "hemisphere":"north",
-    "Location":"Pond"
-}
-fish = FishScraper(params)
-df = fish.generate()
