@@ -3,9 +3,10 @@ import pandas as pd
 import plotly.offline as pyo
 import plotly.graph_objs as go
 
-def donut_by_species(df):
-
 def donut_example(df):
+    pass
+
+def donut_by_species(df):
     data = [
         # Portfolio (inner donut)
         go.Pie(values=[30,40],
