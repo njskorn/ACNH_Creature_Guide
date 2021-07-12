@@ -2,29 +2,97 @@ import numpy as np
 import pandas as pd
 import plotly.offline as pyo
 import plotly.graph_objs as go
+import plotly.express as px
+
+
+def donut_by_species(dfo, months):
+    fig = go.Figure()
+    # Add all traces.
+    # Build dataset
+    cols = ['Frog','Koi']
+    index=months
+    df = pd.DataFrame(columns=cols)
+    df['Months'] = months
+    df['Frog'] = 0
+    df['Koi'] = 1
+    df['Frog'][df['Months'].isin(['May','Jun','Jul','Aug'])] = 1
+    #print(df.head(20))
+    dfd = pd.DataFrame(columns=['Name','slices', 'increments'])
+    print(dfo.head())
+    for idx, col in enumerate(cols, 0):
+        print(idx)
+        print(col)
+        pie_slices=df.iloc[:,idx].tolist()
+        count_pre0 = 0
+        count1 = 0
+        count_post0 = 0
+        for m in pie_slices:
+            if count1 > 0:
+                if m == 1:
+                    count1+=1
+                else:
+                    count_post0+=1
+            else:
+                if m == 1:
+                    count1+=1
+                else:
+                    count_pre0+=1
+        my_list = [count_pre0, count1, count_post0]
+        dfd.loc[idx] = [col, my_list, dfo.loc[dfo['Name'] == col]['increments'].item()]
+
+
+    print(dfd.head())
+
+    for index, row in dfd.iterrows():
+        print(row['slices'])
+        print(row['Name'])
+
+        fig.add_trace(
+            go.Pie(
+                values=row['slices'],
+                labels=[' ',row['Name'],'  '],
+                domain={'x':[0,1], 'y':[0, 1]}, # change these for outer dimensions
+                hole=row['increments'],
+                direction='clockwise',
+                sort=False,
+                marker={'colors':['#FFFFFF','#5DADE2','#FFFFFF']},
+                showlegend=True))
+        pyo.plot(fig, filename='iter_test.html')
+
+
+    #print([next(c[n]) for n in x])
+        #fig.add_trace(go.Scatter(x = anz_d_df.index , y = anz_d_df.iloc[:,idx], mode ='lines', name = col))
+    #pyo.plot(fig, filename='iter_test.html')
+    return
 
 def donut_example(df):
-    pass
-
-def donut_by_species(df):
     data = [
         # Portfolio (inner donut)
-        go.Pie(values=[30,40],
-        labels=['Bass',' '],
+        go.Pie(values=[4,4,4],
+        labels=[' ','Frog','  '],
         #textinfo='label',
         domain={'x':[0,1], 'y':[0, 1]}, # change these for outer dimensions
-        hole=0.85,
+        hole=0.4,
         direction='clockwise',
         sort=False,
-        marker={'colors':['#CB4335','#FFFFFF']},
+        marker={'colors':['#FFFFFF','#5DADE2','#FFFFFF']},
         showlegend=True),
 
+        go.Pie(values=[0,1,0],
+        labels=[' ','Koi','  '],
+        #textinfo='label',
+        domain={'x':[0,1], 'y':[0, 1]}, # change these for outer dimensions
+        hole=0.6,
+        direction='clockwise',
+        sort=False,
+        marker={'colors':['#FFFFFF','#F1948A','#FFFFFF']},
+        showlegend=True),
 
         # Individual components (outer donut)
         go.Pie(values=[1,1,1,1],
         labels=['january','Light Red','Medium Blue','Light Blue'],
         textinfo='label',
-        domain={'x':[0.1,0.9], 'y':[0,1]},
+        domain={'x':[0,1], 'y':[0,1]},
         hole=0.9,
         direction='clockwise',
         sort=False,
@@ -33,10 +101,33 @@ def donut_by_species(df):
 
     fig = go.Figure(data=data, layout={'title':'Nested Pie Chart'})
     pyo.plot(fig, filename='donut_test.html')
+    return
 
 
 
+def iter_example(df):
+    fig = go.Figure()
+    # Add all traces.
+    # Build dataset
+    cols = ['Australian Capital Territory',
+        'New South Wales',
+        'Northern Territory',
+        'Queensland',
+        'South Australia',
+        'Tasmania',
+        'Victoria',
+        'Western Australia',
+        'New Zealand']
+    index = pd.date_range(start='2020-01-22', periods=10)
+    anz_d_df = pd.DataFrame(0,columns=cols, index=index)
+    anz_d_df['Tasmania'] = 1
+    anz_d_df['Queensland'] = 5
+    print(anz_d_df.head(20))
 
+    for idx, col in enumerate(anz_d_df.columns, 0):
+        fig.add_trace(go.Scatter(x = anz_d_df.index , y = anz_d_df.iloc[:,idx], mode ='lines', name = col))
+    pyo.plot(fig, filename='iter_test.html')
+    return
 
 
 def bar_price(df):
